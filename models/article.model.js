@@ -9,9 +9,11 @@ const Article = {
       [titre, contenu, auteur, date, categorie, JSON.stringify(tags || [])]
     );
     save();
-    const result = db.exec('SELECT last_insert_rowid() as id');
-    const id = result[0].values[0][0];
-    return this.findById(id);
+    const result = db.exec(`SELECT * FROM articles ORDER BY rowid DESC LIMIT 1`);
+    if (!result.length) return null;
+    return rowToObj(result[0].columns, result[0].values[0]);
+
+    
   },
 
   async findAll(filters = {}) {
